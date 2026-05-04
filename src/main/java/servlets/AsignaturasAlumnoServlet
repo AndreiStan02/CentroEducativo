@@ -1,1 +1,53 @@
-hola
+package src.main.java.servlets;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.RequestDispatcher;
+import java.io.IOException;
+
+/* 
+ * Servlet encargado de mostrar las asignaturas de un alumno.
+ * Pertenece al rolalu.
+ */
+public class AsignaturasAlumnoServlet extends HttpServlet {
+    
+    private static final long serialVersionUID = 1L;
+
+    public AsignaturasAlumnoServlet() {
+        super();
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        /* 1. Recuperar la sesión actual (sin crear una nueva) */
+        HttpSession sesion = request.getSession(false); 
+        
+        /* 2. Control de seguridad: Si no hay sesión, al login */
+        if (sesion == null || sesion.getAttribute("key") == null) {
+            response.sendRedirect(request.getContextPath() + "/login.html");
+            return;
+        }
+
+        /* 3. Extraer credenciales para la API */
+        String keyApi = (String) sesion.getAttribute("key");
+        String dniUsuario = (String) sesion.getAttribute("dni");
+
+        /* 
+         * 4. Aquí iría la llamada a CentroEducativo con vuestro cliente HTTP.
+         * List<Asignatura> listaAsignaturas = GestorAPI.getAsignaturas(dniUsuario, keyApi);
+         */
+
+        /* Mockup temporal para el Front */
+        String[] asignaturasFalsas = {"Desarrollo Web (DEW)", "Desarrollo Centrado en el Usuario (DCU)"};
+        
+        /* 5. Adjuntar los datos a la petición */
+        request.setAttribute("listaAsignaturas", asignaturasFalsas);
+
+        /* 6. Despachar a la vista correspondiente */
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/vistas/listaAsignaturas.jsp");
+        dispatcher.forward(request, response);
+    }
+}
