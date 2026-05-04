@@ -5,7 +5,7 @@
 **Proyecto:** CentroEducativo  
 **Secretario:** Andrei  
 
----
+-----
 
 ## 1. Resumen de la sesión
 En el día de hoy se han realizado las gestiones iniciales para el arranque técnico del proyecto:
