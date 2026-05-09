@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-    <title>Notas OnLine - no12526</title>
-    <!-- Importamos Bootstrap 5 directamente desde su CDN oficial -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Notas OnLine - Inicio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/estilos.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 
-    <!-- Cabecera / Hero Section -->
     <header class="bg-dark text-white p-5 mb-4 shadow-sm">
         <div class="container">
             <h1 class="display-4 fw-bold">Bienvenid@ a Notas OnLine</h1>
@@ -18,34 +16,32 @@
         </div>
     </header>
 
-    <!-- Contenido Principal -->
     <main class="container">
         <div class="row g-4">
-            
-            <!-- Columna Izquierda: Accesos -->
+           
             <div class="col-md-8">
-                <!-- Tarjeta Alumnos -->
-                <div class="card mb-4 border-0 shadow-sm">
+                <div class="card mb-4 border-0 shadow-sm p-3">
                     <div class="card-body">
+                        <div class="display-6 mb-2">🎓</div>
                         <h2 class="card-title h4">Si eres alumn@...</h2>
-                        <p class="card-text text-muted">Podrás <a href="AreaAlumnoServlet" class="text-decoration-none fw-bold">consultar tus calificaciones</a>... Debes contar con tus datos identificativos para acceder.</p>
+                        <p class="card-text text-muted">Podrás consultar tus calificaciones... Debes contar con tus datos identificativos para acceder.</p>
+                        <a href="login.html" class="btn btn-primary mt-2">Consultar calificaciones</a>
                     </div>
                 </div>
 
-                <!-- Tarjeta Profesores -->
-                <div class="card border-0 shadow-sm">
+                <div class="card border-0 shadow-sm p-3">
                     <div class="card-body">
+                        <div class="display-6 mb-2">👨‍🏫</div>
                         <h2 class="card-title h4">Si eres profesor@...</h2>
-                        <p class="card-text text-muted">Podrás <a href="AreaProfesorServlet" class="text-decoration-none fw-bold">consultar o modificar</a> las calificaciones en tus asignaturas... Debes contar con tus datos identificativos para acceder.</p>
+                        <p class="card-text text-muted">Podrás consultar o modificar las calificaciones en tus asignaturas... Debes contar con tus datos identificativos para acceder.</p>
+                        <a href="login.html" class="btn btn-outline-primary mt-2">Consultar o modificar</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Columna Derecha: Información del Grupo (Obligatorio) -->
             <div class="col-md-4">
                 <div class="card bg-white border-0 shadow-sm">
                     <div class="card-body">
-                        <!-- ¡OJO! Cambiad esto por vuestro número de grupo real -->
                         <h3 class="card-title h5 border-bottom pb-2">Grupo 13_lab_Miercoles</h3>
                         <ol class="small text-muted mt-3">
                             <li>Salmane Elhaouzi</li>
@@ -62,88 +58,10 @@
         </div>
     </main>
 
-    <!-- Pie de página -->
     <footer class="container mt-5 border-top pt-3 text-center small text-muted">
         <p>Trabajo en grupo realizado para la asignatura Desarrollo Web. Curso 2025-2026</p>
     </footer>
 
-    <!-- Scripts de Bootstrap 5 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-=======
-    <title>Notas OnLine — Inicio</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/estilos.css" rel="stylesheet">
-</head>
-<body>
-
-<nav class="navbar navbar-dark bg-dark">
-    <div class="container">
-        <span class="navbar-brand fw-bold">📋 Notas OnLine</span>
-    </div>
-</nav>
-
-<header class="hero">
-    <div class="container">
-        <h1>Notas OnLine</h1>
-        <p class="mt-3">
-            Plataforma de gestión de calificaciones del centro educativo.
-            Accede con tus credenciales para consultar o gestionar las notas.
-        </p>
-    </div>
-</header>
-
-<main>
-    <div class="container py-5">
-        <h2 class="text-center mb-2 fw-semibold">¿Cómo quieres acceder?</h2>
-        <p class="text-center text-muted mb-5">Selecciona tu perfil para iniciar sesión</p>
-
-        <div class="row justify-content-center g-4">
-
-            <div class="col-md-5">
-                <div class="card card-acceso h-100 p-4 text-center">
-                    <div class="icono">🎓</div>
-                    <h3 class="fw-bold mb-2">Soy alumno/a</h3>
-                    <p class="text-muted mb-4">
-                        Consulta las calificaciones de las asignaturas en las que estás
-                        matriculado/a y genera tu certificado de notas.
-                    </p>
-                    <a href="login.html" class="btn btn-primary btn-lg mt-auto">
-                        Consultar mis calificaciones
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-md-5">
-                <div class="card card-acceso h-100 p-4 text-center">
-                    <div class="icono">👨‍🏫</div>
-                    <h3 class="fw-bold mb-2">Soy profesor/a</h3>
-                    <p class="text-muted mb-4">
-                        Consulta y modifica las calificaciones de los alumnos
-                        en las asignaturas que impartes.
-                    </p>
-                    <a href="login.html" class="btn btn-outline-primary btn-lg mt-auto">
-                        Consultar o modificar calificaciones
-                    </a>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</main>
-
-<!-- Footer — PLACEHOLDER: rellenar con grupo y nombres reales -->
-<footer class="bg-dark text-white text-center py-3 small">
-    <div class="container">
-        <span class="fw-bold">Grupo GXX — 3TIXX</span> |
-        Apellidos Nombre 1 · Apellidos Nombre 2 · Apellidos Nombre 3 · Apellidos Nombre 4
-        <br>
-        Trabajo en grupo para la asignatura <em>Desarrollo de Entornos Web</em> — Curso 2025/2026
-    </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
->>>>>>> branch 'main' of https://salmane2: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@github.com/AndreiStan02/CentroEducativo.git
