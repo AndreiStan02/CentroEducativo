@@ -1,14 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd" id="WebApp_ID" version="5.0">
-  <display-name>no12526</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.xhtml</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.xhtml</welcome-file>
-  </welcome-file-list>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         id="WebApp_ID"
+         version="5.0">
+
+    <display-name>nol2526</display-name>
+
+    <!-- ================================================================== -->
+    <!-- PARÁMETROS DE CONTEXTO                                              -->
+    <!-- ================================================================== -->
+
+    <!-- URL base de CentroEducativo -->
+    <context-param>
+        <param-name>centroEducativoUrl</param-name>
+        <param-value>http://localhost:9090/CentroEducativo</param-value>
+    </context-param>
+
+    <!-- ================================================================== -->
+    <!-- FILTROS                                                             -->
+    <!-- ================================================================== -->
+
+
+
+    <!-- ================================================================== -->
+    <!-- SERVLETS                                                            -->
+    <!-- ================================================================== -->
+
+    <!-- Login: recibe el formulario, autentica contra CentroEducativo -->
+    <servlet>
+        <servlet-name>Acceso</servlet-name>
+        <servlet-class>servlets.Acceso</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Acceso</servlet-name>
+        <url-pattern>/acceso</url-pattern>
+    </servlet-mapping>
+
+    <!-- Logout: invalida la sesión y redirige al inicio -->
+    <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>servlets.Logout</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <!-- ================================================================== -->
+    <!-- SESIÓN Y PÁGINA DE INICIO                                           -->
+    <!-- ================================================================== -->
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
 </web-app>
