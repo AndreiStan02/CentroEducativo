@@ -23,12 +23,13 @@ import java.io.IOException;
  * Gestiona el login de la aplicación NOL comunicándose con CentroEducativo.
  *
  * Flujo:
- *  1. Recibe DNI y password del formulario login.html
- *  2. Hace POST /login a CentroEducativo
- *  3. Si responde 200 → recibe la key de sesión
- *  4. Consulta el rol del usuario en CentroEducativo (alumno o profesor)
- *  5. Guarda dni, pass, key y rol en la HttpSession de Tomcat
- *  6. Redirige según el rol
+ *  1. Si ya hay sesión activa → redirige directamente según rol (sin repetir login)
+ *  2. Recibe DNI y password del formulario login.html
+ *  3. Hace POST /login a CentroEducativo
+ *  4. Si responde 200 → recibe la key de sesión
+ *  5. Consulta el rol del usuario en CentroEducativo (alumno o profesor)
+ *  6. Guarda dni, pass, key y rol en la HttpSession de Tomcat
+ *  7. Redirige según el rol
  *
  * URL de mapeo (web.xml): /acceso
  */
@@ -47,20 +48,37 @@ public class Acceso extends HttpServlet {
     }
 
     /**
-     * GET: si alguien llega a /acceso directamente, lo mandamos al formulario.
+     * GET: si alguien llega a /acceso directamente:
+     *  - Si ya tiene sesión activa → redirige a su zona según rol
+     *  - Si no → redirige al formulario de login
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("key") != null) {
+            redirigirSegunRol(request, response, (String) session.getAttribute("rol"));
+            return;
+        }
         response.sendRedirect(request.getContextPath() + "/login.html");
     }
 
     /**
      * POST: recibe el formulario de login.html con los campos "dni" y "password".
+     *  - Si ya tiene sesión activa → redirige sin volver a hacer login
+     *  - Si no → procesa el login contra CentroEducativo
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        // Comprobar si ya hay sesión activa
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("key") != null) {
+            redirigirSegunRol(request, response, (String) session.getAttribute("rol"));
+            return;
+        }
 
         // --- 1. Leer los datos del formulario ---
         String dni      = request.getParameter("dni");
@@ -90,24 +108,36 @@ public class Acceso extends HttpServlet {
 
         // --- 4. Guardar datos en la sesión HTTP ---
         // Todos los servlets del grupo accederán a estos atributos para
-        // hacer peticiones autenticadas a CentroEducativo.
-        HttpSession session = request.getSession(true);
-        session.setAttribute("dni",  dni);
-        session.setAttribute("pass", password);
-        session.setAttribute("key",  key);
-        session.setAttribute("rol",  rol);  // "rolalu" o "rolpro"
+        // hacer peticiones autenticadas a CentroEducativo:
+        //   String key = (String) session.getAttribute("key");
+        //   String dni = (String) session.getAttribute("dni");
+        //   String rol = (String) session.getAttribute("rol");
+        HttpSession newSession = request.getSession(true);
+        newSession.setAttribute("dni",  dni);
+        newSession.setAttribute("pass", password);
+        newSession.setAttribute("key",  key);
+        newSession.setAttribute("rol",  rol);
 
         // --- 5. Redirigir según el rol ---
+        redirigirSegunRol(request, response, rol);
+    }
+
+    // -------------------------------------------------------------------------
+    // Métodos auxiliares
+    // -------------------------------------------------------------------------
+
+    /**
+     * Redirige al usuario a su zona según el rol.
+     * Extraído para no repetir la lógica en doGet y doPost.
+     */
+    private void redirigirSegunRol(HttpServletRequest request, HttpServletResponse response, String rol)
+            throws IOException {
         if ("rolpro".equals(rol)) {
             response.sendRedirect(request.getContextPath() + "/profesor/asignaturas");
         } else {
             response.sendRedirect(request.getContextPath() + "/alumno/asignaturas");
         }
     }
-
-    // -------------------------------------------------------------------------
-    // Métodos auxiliares
-    // -------------------------------------------------------------------------
 
     /**
      * Hace POST /login a CentroEducativo.
