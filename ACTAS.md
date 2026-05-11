@@ -23,8 +23,6 @@ Se han fijado los siguientes puntos obligatorios para todos los integrantes:
 
 ---
 
-Aquí tienes el acta actualizada con la asignación nominal de los responsables y la lista de tareas específicas para la próxima semana:
-
 # Acta de Reunión - 04/05/2026
 
 **Proyecto:** CentroEducativo  
@@ -56,3 +54,37 @@ Para la siguiente sesión, cada responsable deberá haber avanzado en la lógica
 *   **General:** Realizar el primer "push" conjunto al repositorio para verificar la integración de estas partes.
 
 ---
+
+# Acta de Reunión - 11/05/2026
+
+**Proyecto:** CentroEducativo
+
+**Secretario:** Andrei
+
+**Asistentes:** Andrei, Pablo, Álvaro, Gabi, Salman, Alejandra
+
+---
+
+## 1. Resumen de la sesión
+
+En la sesión de hoy se ha llevado a cabo una revisión del progreso individual y se han alineado los objetivos finales para la entrega del primer hito:
+
+* **Revisión de avances:** Se ha verificado el trabajo realizado por cada integrante durante la semana, validando la integración en el repositorio.
+* **Definición de meta (Hito 1):** El equipo ha acordado concentrar los esfuerzos en finalizar dos pilares fundamentales: la lógica completa del alumno y la redacción de la documentación técnica.
+
+## 2. Acuerdos y compromisos
+
+Se mantiene el reparto de responsabilidades establecido en la sesión previa, con el compromiso de cerrar las tareas pendientes antes de la fecha límite del Hito 1:
+
+1. **Finalización de la lógica del alumno:** Cada subequipo deberá completar las funcionalidades de Frontend, Backend, Login y Logs relacionadas con el perfil del estudiante.
+2. **Cierre de documentación:** Redactar y pulir los apartados documentales correspondientes a cada área de desarrollo.
+
+## 3. Próximos pasos (Tareas para el cierre del Hito 1)
+
+Siguiendo la estructura de roles definida, las tareas específicas son:
+
+* **Gabi y Salman (Frontend):** Concluir las interfaces de usuario para la gestión de alumnos y asegurar su correcta conexión con la API.
+* **Pablo y Álvaro (Backend):** Finalizar y testear los endpoints del CRUD de alumnos y asegurar la estabilidad de la base de datos.
+* **Andrei (Login):** Validar que el sistema de autenticación y los permisos de acceso para el rol de alumno funcionan sin errores.
+* **Alejandra (Logs):** Verificar que todas las acciones críticas sobre los expedientes de alumnos queden correctamente trazadas en el registro del sistema.
+* **General:** Cada miembro debe redactar la documentación técnica de su parte correspondiente para consolidar el documento final del proyecto.
