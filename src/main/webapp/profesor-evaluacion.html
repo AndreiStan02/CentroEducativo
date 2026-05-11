@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notas OnLine - Evaluación de Alumnos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <header class="bg-dark text-white p-5 mb-4 shadow-sm">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="display-6 fw-bold">Evaluación: Desarrollo Web (DEW)</h1>
+                <p class="lead mb-0">Profesor@: Ramón García</p>
+            </div>
+            <a href="AreaProfesorServlet" class="btn btn-outline-light">Volver a mis asignaturas</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="row g-4">
+            
+            <div class="col-md-8">
+                <div class="card shadow border-0 overflow-hidden text-center p-4">
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <button class="btn btn-primary" id="btnAnterior" onclick="cambiarAlumno(-1)">&laquo; Anterior</button>
+                        
+                        <div>
+                            <div class="bg-secondary text-white d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 120px; height: 120px;">
+                                <span id="fotoAlumno" class="small">[Foto DNI]</span>
+                            </div>
+                            <h2 class="h4 text-dark mb-0" id="nombreAlumno">Cargando alumno...</h2>
+                            <p class="text-muted" id="dniAlumno">---------</p>
+                        </div>
+
+                        <button class="btn btn-primary" id="btnSiguiente" onclick="cambiarAlumno(1)">Siguiente &raquo;</button>
+                    </div>
+
+                    <hr>
+
+                    <div class="row justify-content-center mt-3">
+                        <div class="col-md-6 bg-light p-3 rounded border">
+                            <label for="notaAlumno" class="form-label fw-bold">Calificación en la asignatura:</label>
+                            <div class="input-group input-group-lg">
+                                <input type="number" class="form-control text-center text-success fw-bold" id="notaAlumno" step="0.1" min="0" max="10" placeholder="Ej: 8.5" onchange="guardarNota()">
+                                <span class="input-group-text">/ 10</span>
+                            </div>
+                            <small id="estadoGuardado" class="text-muted mt-2 d-block">Nota sincronizada</small>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-white border-0 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title h5 border-bottom pb-2">Grupo 13_lab_Miercoles</h3>
+                        <ol class="small text-muted mt-3">
+                            <li>Salmane Elhaouzi</li>
+                            <li>Alaa Ghabi</li>
+                            <li>Barat Arriaza Alvaro</li>
+                            <li>Stan Dima Vlad Andrei</li>
+                            <li>Valles Galan Alejandra</li>
+                            <li>Villar Melis Pablo</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="js/evaluacion-ajax.js" defer></script>
+</body>
+</html>
