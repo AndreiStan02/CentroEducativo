@@ -5,7 +5,7 @@
          id="WebApp_ID"
          version="5.0">
 
-    <display-name>nol2526</display-name>
+    <display-name>no12526</display-name>
 
     <!-- ================================================================== -->
     <!-- PARÁMETROS DE CONTEXTO                                              -->
@@ -20,7 +20,21 @@
     <!-- ================================================================== -->
     <!-- FILTROS                                                             -->
     <!-- ================================================================== -->
-
+	
+	<context-param>
+		<param-name>archivoLog</param-name>
+		<param-value>/tmp/no12526.log</param-value>
+	</context-param>
+	
+	<filter>
+		<filter-name>Logs</filter-name>
+		<filter-class>filtros.FiltroLogs</filter-class>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>Logs</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 
     <!-- ================================================================== -->
