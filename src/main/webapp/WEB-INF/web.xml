@@ -67,7 +67,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>AsignaturasAlumno</servlet-name>
-        <url-pattern>/AsignaturasAlumnoServlet</url-pattern>
+        <url-pattern>/asignaturasAlumnoServlet</url-pattern>
     </servlet-mapping>
     <!-- ================================================================== -->
     <!-- SESIÓN Y PÁGINA DE INICIO                                           -->
