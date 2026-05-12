@@ -61,14 +61,15 @@
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 
-	<servlet>
-        <servlet-name>AsignaturasAlumno</servlet-name>
-        <servlet-class>servlets.AsignaturasAlumnoServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>AsignaturasAlumno</servlet-name>
-        <url-pattern>/asignaturasAlumnoServlet</url-pattern>
-    </servlet-mapping>
+<servlet>
+    <servlet-name>AsignaturasAlumnoServlet</servlet-name>
+    <servlet-class>dew.backend.AsignaturasAlumnoServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>AsignaturasAlumnoServlet</servlet-name>
+    <url-pattern>/alumno/asignaturas</url-pattern>
+</servlet-mapping>
+    
     <!-- ================================================================== -->
     <!-- SESIÓN Y PÁGINA DE INICIO                                           -->
     <!-- ================================================================== -->
