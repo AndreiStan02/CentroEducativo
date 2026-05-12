@@ -1,28 +1,30 @@
-package java.api;
+package api;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import java.io.IOException;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 public class ApiClient {
-    private static final String BASE_URL = "http://localhost:9090/CentroEducativo";
-    // OkHttp recomienda usar una sola instancia para toda la app
-    private static final OkHttpClient client = new OkHttpClient();
 
-    public static String obtenerAsignaturas(String key) throws IOException {
-        // Construimos la petición GET hacia la API
-        Request request = new Request.Builder()
-                .url(BASE_URL + "/asignaturas?key=" + key)
-                .get()
-                .build();
+    // Método genérico para hacer peticiones GET a la API
+    public static String obtenerDatosGet(String urlFinal) throws Exception {
+        
+        // Usamos Apache HttpClient igual que en el archivo Acceso.java
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            
+            HttpGet request = new HttpGet(urlFinal);
+            request.setHeader("Accept", "application/json");
 
-        // Ejecutamos la petición y devolvemos el cuerpo (el JSON crudo)
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new IOException("Error inesperado en la API: " + response);
+            try (CloseableHttpResponse response = httpClient.execute(request)) {
+                if (response.getCode() == 200) {
+                    // Devuelve el JSON en formato String
+                    return EntityUtils.toString(response.getEntity());
+                } else {
+                    throw new Exception("Error del servidor de datos: " + response.getCode());
+                }
             }
-            return response.body().string();
         }
     }
 }
