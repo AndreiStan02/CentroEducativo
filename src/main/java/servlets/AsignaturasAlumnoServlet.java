@@ -1,7 +1,10 @@
 package dew.backend;
 
 import java.io.IOException;
+<<<<<<< HEAD
 import java.lang.reflect.Type;
+=======
+>>>>>>> 6b1841e40b33f9f87d6d97ed354a3e4c27127f75
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -15,10 +18,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+
 public class AsignaturasAlumnoServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    @Override
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
@@ -52,6 +56,7 @@ public class AsignaturasAlumnoServlet extends HttpServlet {
         } catch (Exception e) {
             // Si la API falla, mandamos un error 500
             throw new ServletException("Error al cargar las asignaturas desde la API", e);
+
         }
     }
 }
