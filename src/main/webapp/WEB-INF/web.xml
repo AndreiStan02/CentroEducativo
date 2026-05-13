@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="https://jakarta.ee/xml/ns/jakartaee"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
@@ -6,6 +7,9 @@
          version="6.0">
 
     <display-name>no12526</display-name>
+
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" id="WebApp_ID" version="6.0">
+  <display-name>no12526</display-name>
 
     <!-- ================================================================== -->
     <!-- PARÁMETROS DE CONTEXTO                                              -->
@@ -20,10 +24,10 @@
     <!-- ================================================================== -->
     <!-- FILTROS                                                             -->
     <!-- ================================================================== -->
-	
+	<!--  
 	<context-param>
-		<param-name>archivoLog</param-name>
-		<param-value>/tmp/no12526.log</param-value>
+    	<param-name>archivoLog</param-name>
+    	<param-value>/logs/no12526.log</param-value>
 	</context-param>
 	
 	<filter>
@@ -36,7 +40,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-
+	-->
     <!-- ================================================================== -->
     <!-- SERVLETS                                                            -->
     <!-- ================================================================== -->
@@ -44,7 +48,7 @@
     <!-- Login: recibe el formulario, autentica contra CentroEducativo -->
     <servlet>
         <servlet-name>Acceso</servlet-name>
-        <servlet-class>servlets.Acceso</servlet-class>
+        <servlet-class>serverlets.Acceso</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Acceso</servlet-name>
@@ -54,21 +58,24 @@
     <!-- Logout: invalida la sesión y redirige al inicio -->
     <servlet>
         <servlet-name>Logout</servlet-name>
-        <servlet-class>servlets.Logout</servlet-class>
+        <servlet-class>serverlets.Logout</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Logout</servlet-name>
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 
-<servlet>
-    <servlet-name>AsignaturasAlumnoServlet</servlet-name>
-    <servlet-class>servlets.AsignaturasAlumnoServlet</servlet-class>
-</servlet>
-<servlet-mapping>
-    <servlet-name>AsignaturasAlumnoServlet</servlet-name>
-    <url-pattern>/alumno/asignaturas</url-pattern>
-</servlet-mapping>
+    <!-- Configuración del Servlet de Asignaturas de Alumno -->
+    <servlet>
+        <servlet-name>AsignaturasAlumnoServlet</servlet-name>
+        <!-- ¡CAMBIO AQUÍ! Ahora apunta a serverlets -->
+        <servlet-class>serverlets.AsignaturasAlumnoServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>AsignaturasAlumnoServlet</servlet-name>
+        <url-pattern>/alumno/asignaturas</url-pattern>
+    </servlet-mapping>
     
     <!-- ================================================================== -->
     <!-- SESIÓN Y PÁGINA DE INICIO                                           -->
@@ -81,7 +88,4 @@
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
-
 </web-app>
-
-<!-- Filtros -->

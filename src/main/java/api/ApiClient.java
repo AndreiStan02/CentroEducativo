@@ -8,10 +8,9 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 public class ApiClient {
 
-    // Método genérico para hacer peticiones GET a la API
+    // Método reutilizable para hacer peticiones GET a CentroEducativo
     public static String obtenerDatosGet(String urlFinal) throws Exception {
         
-        // Usamos Apache HttpClient igual que en el archivo Acceso.java
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             
             HttpGet request = new HttpGet(urlFinal);
@@ -19,10 +18,9 @@ public class ApiClient {
 
             try (CloseableHttpResponse response = httpClient.execute(request)) {
                 if (response.getCode() == 200) {
-                    // Devuelve el JSON en formato String
                     return EntityUtils.toString(response.getEntity());
                 } else {
-                    throw new Exception("Error del servidor de datos: " + response.getCode());
+                    throw new Exception("Error de CentroEducativo. Código: " + response.getCode());
                 }
             }
         }
