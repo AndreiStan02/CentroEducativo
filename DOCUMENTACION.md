@@ -147,7 +147,7 @@ boolean autenticado = (session != null && session.getAttribute("key") != null);
 
 **`getSession(false)`:** Se usa `false` para no crear una sesión nueva si no existe, evitando sesiones vacías innecesarias.
 
-=======
+---
 
 ## Sistema de filtros Logs (Versión 2)
 Se ha implementado un filtro de servlets que registra cada interacción con la aplicación en un documento en orden cronológico.
