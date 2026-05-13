@@ -14,19 +14,16 @@
                 <h1 class="display-6 fw-bold">Evaluación: Desarrollo Web (DEW)</h1>
                 <p class="lead mb-0">Profesor@: Ramón García</p>
             </div>
-            <a href="AreaProfesorServlet" class="btn btn-outline-light">Volver a mis asignaturas</a>
+            <a href="login.html" class="btn btn-outline-light">Volver a mis asignaturas</a>
         </div>
     </header>
 
     <main class="container">
         <div class="row g-4">
-            
             <div class="col-md-8">
                 <div class="card shadow border-0 overflow-hidden text-center p-4">
-                    
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <button class="btn btn-primary" id="btnAnterior" onclick="cambiarAlumno(-1)">&laquo; Anterior</button>
-                        
                         <div>
                             <div class="bg-secondary text-white d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 120px; height: 120px;">
                                 <span id="fotoAlumno" class="small">[Foto DNI]</span>
@@ -34,12 +31,9 @@
                             <h2 class="h4 text-dark mb-0" id="nombreAlumno">Cargando alumno...</h2>
                             <p class="text-muted" id="dniAlumno">---------</p>
                         </div>
-
                         <button class="btn btn-primary" id="btnSiguiente" onclick="cambiarAlumno(1)">Siguiente &raquo;</button>
                     </div>
-
                     <hr>
-
                     <div class="row justify-content-center mt-3">
                         <div class="col-md-6 bg-light p-3 rounded border">
                             <label for="notaAlumno" class="form-label fw-bold">Calificación en la asignatura:</label>
@@ -50,10 +44,8 @@
                             <small id="estadoGuardado" class="text-muted mt-2 d-block">Nota sincronizada</small>
                         </div>
                     </div>
-
                 </div>
             </div>
-
             <div class="col-md-4">
                 <div class="card bg-white border-0 shadow-sm">
                     <div class="card-body">
@@ -69,12 +61,19 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </main>
 
+    <footer class="bg-dark text-white text-center py-4 mt-5 small">
+        <div class="container">
+            <span class="fw-bold">Grupo 13_lab_Miercoles</span> |
+            Salmane Elhaouzi · Alaa Ghabi · Barat Arriaza Alvaro · Stan Dima Vlad Andrei · Valles Galan Alejandra · Villar Melis Pablo
+            <br><br>
+            Trabajo en grupo para la asignatura <em>Desarrollo de Entornos Web</em> — Curso 2025/2026
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script src="js/evaluacion-ajax.js" defer></script>
+    <script src="scripts/evaluacion-ajax.js" defer></script>
 </body>
 </html>
