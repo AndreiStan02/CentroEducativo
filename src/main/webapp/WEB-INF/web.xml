@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" id="WebApp_ID" version="6.0">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd" id="WebApp_ID" version="5.0">
   <display-name>no12526</display-name>
 
     <!-- ================================================================== -->
@@ -15,15 +15,15 @@
     <!-- ================================================================== -->
     <!-- FILTROS                                                             -->
     <!-- ================================================================== -->
-	<!--  
+ 
 	<context-param>
-    	<param-name>archivoLog</param-name>
-    	<param-value>/logs/no12526.log</param-value>
+		<param-name>archivoLog</param-name>
+		<param-value>no12526.log</param-value>
 	</context-param>
 	
 	<filter>
 		<filter-name>Logs</filter-name>
-		<filter-class>filtros.FiltroLogs</filter-class>
+		<filter-class>filtros.filtroLogs</filter-class>
 	</filter>
 	
 	<filter-mapping>
@@ -31,7 +31,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	-->
+	
     <!-- ================================================================== -->
     <!-- SERVLETS                                                            -->
     <!-- ================================================================== -->
