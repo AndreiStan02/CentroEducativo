@@ -1,9 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notas OnLine - Detalles de Calificación</title>
+    <title>Notas OnLine - Detalles de CalificaciÃ³n</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/impresion.css" rel="stylesheet" media="print">
 </head>
@@ -12,7 +13,7 @@
     <!-- Cabecera -->
     <header class="bg-dark text-white p-5 mb-4 shadow-sm">
         <div class="container">
-            <h1 class="display-5 fw-bold">Fernandez Gómez, Maria (23456387R)</h1>
+            <h1 class="display-5 fw-bold">Fernandez GÃ³mez, Maria (23456387R)</h1>
         </div>
     </header>
 
@@ -28,9 +29,9 @@
                         <!-- Contenedor de la foto -->
                         <div class="col-md-4 bg-secondary d-flex align-items-center justify-content-center" style="min-height: 250px;">
                             <!-- El PDF indica que la foto debe llamarse como el DNI (ej. 23456387R.png).
-                                 De momento ponemos un texto provisional hasta que tu compañero de Backend lo conecte -->
+                                 De momento ponemos un texto provisional hasta que tu compaÃ±ero de Backend lo conecte -->
                             <span class="text-white text-center p-3">
-                                [Aquí irá la foto del DNI]<br>23456387R.png
+                                [AquÃ­ irÃ¡ la foto del DNI]<br>23456387R.png
                             </span>
                         </div>
                         
@@ -39,14 +40,14 @@
                             <div class="card-body p-4">
                                 <h5 class="card-title text-primary">[Matriculad@ en: DCU, DSW]</h5>
                                 
-                                <!-- El PDF exige incluir este texto de relleno explícitamente -->
+                                <!-- El PDF exige incluir este texto de relleno explÃ­citamente -->
                                 <p class="card-text text-muted small mt-3 text-justify">
                                     info info info 
                                 </p>
                                 
                                 <hr>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <span class="h5 mb-0 text-dark">Calificación Final:</span>
+                                    <span class="h5 mb-0 text-dark">CalificaciÃ³n Final:</span>
                                     <span class="h3 mb-0 text-success fw-bold">8.5</span>
                                 </div>
                             </div>
@@ -55,7 +56,7 @@
                 </div>
             </div>
 
-            <!-- Columna Derecha: Información del Grupo (Obligatorio) -->
+            <!-- Columna Derecha: InformaciÃ³n del Grupo (Obligatorio) -->
             <div class="col-md-4">
                 <div class="card bg-white border-0 shadow-sm">
                     <div class="card-body">
@@ -75,7 +76,7 @@
         </div>
     </main>
 
-    <!-- Pie de página -->
+    <!-- Pie de pÃ¡gina -->
     <footer class="container mt-5 border-top pt-3 text-center small text-muted">
         <p>Trabajo en grupo realizado para la asignatura Desarrollo Web. Curso 2025-2026</p>
     </footer>
