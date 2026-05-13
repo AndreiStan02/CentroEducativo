@@ -114,9 +114,9 @@ public class Acceso extends HttpServlet {
     private void redirigirSegunRol(HttpServletRequest request, HttpServletResponse response, String rol)
             throws IOException {
         if ("rolpro".equals(rol)) {
-            response.sendRedirect(request.getContextPath() + "/profesor/asignaturas");
+            response.sendRedirect(request.getContextPath() + "/profesor-asignaturas.html");
         } else {
-            response.sendRedirect(request.getContextPath() + "/alumno/asignaturas");
+            response.sendRedirect(request.getContextPath() + "/asignaturas_alumno.html");
         }
     }
 

@@ -32,7 +32,6 @@
 		<filter-name>Logs</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
 	
     <!-- ================================================================== -->
     <!-- SERVLETS                                                            -->
