@@ -147,11 +147,7 @@ boolean autenticado = (session != null && session.getAttribute("key") != null);
 
 **`getSession(false)`:** Se usa `false` para no crear una sesión nueva si no existe, evitando sesiones vacías innecesarias.
 
-**Redirección con `getContextPath()`:** Se usa `req.getContextPath()` para que la redirección funcione correctamente independientemente del nombre del proyecto desplegado en Tomcat.
 =======
-
-
-
 
 ## Sistema de filtros Logs (Versión 2)
 Se ha implementado un filtro de servlets que registra cada interacción con la aplicación en un documento en orden cronológico.
