@@ -55,7 +55,7 @@ public class AsignaturasAlumnoServlet extends HttpServlet {
             request.setAttribute("asignaturas", listaAsignaturas);
             
             // 6. Redirigir al JSP (que debe estar en la carpeta webapp)
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/asignaturas_alumno.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/asignaturas_alumno.html");
             dispatcher.forward(request, response);
             
         } catch (Exception e) {

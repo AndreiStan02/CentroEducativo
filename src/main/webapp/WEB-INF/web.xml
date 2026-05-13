@@ -69,6 +69,17 @@
         <url-pattern>/alumno/asignaturas</url-pattern>
     </servlet-mapping>
     
+        <!-- Configuración del Servlet de Detalles/Expediente del Alumno -->
+    <servlet>
+        <servlet-name>DetallesAlumnoServlet</servlet-name>
+        <servlet-class>serverlets.DetallesAlumnoServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>DetallesAlumnoServlet</servlet-name>
+        <url-pattern>/alumno/detalles</url-pattern>
+    </servlet-mapping>
+    
     <!-- ================================================================== -->
     <!-- SESIÓN Y PÁGINA DE INICIO                                           -->
     <!-- ================================================================== -->
