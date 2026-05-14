@@ -200,3 +200,73 @@ El filtro intercepta cada petición HTTP, extrae los metadatos necesarios y los 
 **Append:** Se utiliza **new FileWriter(nombre, true)** para asegurar que las nuevas entradas se añadan al final del archivo sin borrar la actividad previa.
 **Bloque try:** Garantiza el cierre automático del flujo de escritura (PrintWriter), asegurando que los datos se guarden físicamente en el disco incluso ante errores inesperados.
 **Catch:** Si el sistema de archivos falla, el error se reporta por consola pero la aplicación web sigue funcionando, evitando que los errores de log bloqueen el trabajo del resto del equipo.
+
+---
+
+## Servlets de Gestión de Alumnado
+
+Se han implementado servlets específicos para gestionar la información que visualiza el alumno en su panel, comunicándose directamente con la API REST del backend `CentroEducativo`. Ambos servlets están protegidos por el filtro de sesión.
+
+### 1. AsignaturasAlumnoServlet
+Este servlet se encarga de recuperar y mostrar el listado de asignaturas en las que está matriculado un alumno.
+
+* **Método HTTP:** `GET`
+* **Lógica de ejecución:**
+    1.  **Validación:** Extrae el `dni` y la `key` de la sesión HTTP actual.
+    2.  **Petición a la API:** Construye la URL base y realiza una petición GET al endpoint `/alumnos/{dni}/asignaturas?key={key}` mediante la clase de utilidad `ApiClient`.
+    3.  **Mapeo de datos:** Utiliza la librería `Gson` y `TypeToken` para convertir el JSON en crudo devuelto por la API en una lista de objetos Java `List<Asignatura>`.
+    4.  **Redirección:** Inyecta la lista resultante en el `request` bajo el atributo `asignaturas` y delega la visualización a la vista `/asignaturas_alumno.html` usando `RequestDispatcher`.
+
+### 2. DetallesAlumnoServlet
+Este servlet construye el expediente detallado del alumno, combinando su información personal con su rendimiento académico.
+
+* **Método HTTP:** `GET`
+* **Lógica de ejecución:**
+    1.  **Peticiones múltiples:** A diferencia del anterior, este servlet realiza dos llamadas a la API:
+        * `/alumnos/{dni}?key={key}`: Para obtener la ficha personal (nombre, apellidos, etc.) y mapearlo a un objeto `Alumno`.
+        * `/alumnos/{dni}/asignaturas?key={key}`: Para obtener las materias cursadas.
+    2.  **Lógica temporal (Hito 1):** Dado que la API (Swagger) no expone claramente las notas dentro del listado de asignaturas, se ha implementado una nota media "dummy" (8.5) para cumplir con los requisitos visuales de esta primera entrega.
+    3.  **Requisitos de la práctica:** Se inyecta un texto *Lorem Ipsum* estático en el atributo `loremIpsum`, tal y como exige el enunciado del Hito 1.
+    4.  **Redirección:** Empaqueta todos los datos (`alumno`, `asignaturas`, `notaMedia`, `loremIpsum`) y redirige a la vista `/detalles_alumno.html`.
+
+### Gestión de Errores en Servlets
+En ambos servlets, si ocurre algún fallo de red (conexión caída con la API) o error de parseo JSON, la excepción es capturada en un bloque `catch`, se imprime en la salida estándar de errores (consola) y se redirige de forma segura al usuario a `/login-error.html` para evitar exponer las trazas al cliente.
+---
+
+## Cliente de Comunicación API (ApiClient)
+
+Para evitar la duplicación de código en los distintos servlets y centralizar la lógica de comunicación con el backend `CentroEducativo`, se ha creado una clase de utilidad en el paquete `api`.
+
+### Clase ApiClient
+Esta clase actúa como un envoltorio (wrapper) para realizar peticiones HTTP hacia la API REST externa utilizando la librería **Apache HttpClient 5**.
+
+#### Método: `obtenerDatosGet(String urlFinal)`
+Es un método estático y reutilizable diseñado específicamente para realizar peticiones HTTP de tipo `GET`. 
+
+* **Lógica de ejecución:**
+    1. **Configuración del Cliente:** Inicializa un cliente HTTP por defecto (`CloseableHttpClient`).
+    2. **Preparación de la Petición:** Crea un objeto `HttpGet` con la URL final construida previamente por los servlets (que ya incluye el DNI y la *key* de sesión).
+    3. **Negociación de Contenido:** Establece explícitamente la cabecera `Accept` a `application/json` para asegurar que el backend devuelve los datos en el formato correcto para ser procesados posteriormente por Gson.
+    4. **Ejecución y Validación:** Ejecuta la petición y evalúa el código de estado HTTP de la respuesta:
+        * Si el código es **200 (OK)**: Extrae el contenido del cuerpo de la respuesta como una cadena de texto (String) utilizando `EntityUtils.toString()` y lo retorna al servlet llamador.
+        * Si el código es **distinto de 200**: Lanza una excepción indicando que hubo un error en la API junto con el código recibido, lo cual interrumpe el flujo y transfiere el control al bloque `catch` del servlet.
+* **Gestión de Recursos:** Implementa bloques `try-with-resources` tanto para el cliente HTTP como para la respuesta (`CloseableHttpResponse`). Esto garantiza que las conexiones de red se cierren correctamente de forma automática tras su uso o en caso de error, previniendo fugas de memoria.
+---
+
+## Capa de Presentación (Frontend y Vistas)
+
+La interfaz de usuario se ha desarrollado garantizando un diseño responsivo y accesible, utilizando **Bootstrap 5** a través de CDN, complementado con reglas CSS propias para la adaptación visual del sistema.
+
+### 1. Estructura de Vistas
+Las vistas se encuentran en el directorio `src/main/webapp/` y se dividen en estáticas y dinámicas:
+
+* **Vistas estáticas (`.html`):** * `index.html`: Portal de bienvenida que redirige a los usuarios según su perfil.
+    * `login.html`: Formulario de autenticación que envía las credenciales al backend (Servlet `Acceso`).
+    * `profesor-evaluacion.html`: Interfaz para calificar alumnos diseñada con controles interactivos. 
+* **Vistas dinámicas (`.jsp`):**
+    * `asignaturas_alumno.jsp` y `detalles_alumno.jsp`: Páginas preparadas con la directiva de página de Jakarta EE para recibir e iterar sobre los datos enviados por los servlets del alumno.
+    * `profesor-asignaturas.jsp`: Listado dinámico de las materias impartidas por el docente.
+
+### 2. Estilos y Scripts (`/css` y `/scripts`)
+* **`css/estilos.css`:** Contiene los ajustes visuales específicos del proyecto (colores corporativos, sombreados de tarjetas y ajustes de layout) que sobrescriben o complementan a Bootstrap.
+* **`scripts/evaluacion-ajax.js`:** Archivo JavaScript encargado de gestionar la lógica del cliente en la pantalla de evaluación. Actualmente implementa una simulación (mock) de carga de datos mediante un array en memoria para probar el carrusel interactivo circular de alumnos, así como la simulación visual del guardado de calificaciones sin recargar la página.
