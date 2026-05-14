@@ -64,8 +64,8 @@ public class DetallesAlumnoServlet extends HttpServlet {
             // Texto de relleno (exigido por el enunciado)
             request.setAttribute("loremIpsum", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
 
-            // Redirigir (Mantén .html si el front aún no lo ha cambiado a .jsp)
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/detalles_alumno.html");
+            // Redirigir 
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/detalles_alumno.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e) {
