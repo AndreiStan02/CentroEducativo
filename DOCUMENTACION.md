@@ -200,3 +200,34 @@ El filtro intercepta cada petición HTTP, extrae los metadatos necesarios y los 
 **Append:** Se utiliza **new FileWriter(nombre, true)** para asegurar que las nuevas entradas se añadan al final del archivo sin borrar la actividad previa.
 **Bloque try:** Garantiza el cierre automático del flujo de escritura (PrintWriter), asegurando que los datos se guarden físicamente en el disco incluso ante errores inesperados.
 **Catch:** Si el sistema de archivos falla, el error se reporta por consola pero la aplicación web sigue funcionando, evitando que los errores de log bloqueen el trabajo del resto del equipo.
+
+---
+
+## Servlets de Gestión de Alumnado
+
+Se han implementado servlets específicos para gestionar la información que visualiza el alumno en su panel, comunicándose directamente con la API REST del backend `CentroEducativo`. Ambos servlets están protegidos por el filtro de sesión.
+
+### 1. AsignaturasAlumnoServlet
+Este servlet se encarga de recuperar y mostrar el listado de asignaturas en las que está matriculado un alumno.
+
+* **Método HTTP:** `GET`
+* **Lógica de ejecución:**
+    1.  **Validación:** Extrae el `dni` y la `key` de la sesión HTTP actual.
+    2.  **Petición a la API:** Construye la URL base y realiza una petición GET al endpoint `/alumnos/{dni}/asignaturas?key={key}` mediante la clase de utilidad `ApiClient`.
+    3.  **Mapeo de datos:** Utiliza la librería `Gson` y `TypeToken` para convertir el JSON en crudo devuelto por la API en una lista de objetos Java `List<Asignatura>`.
+    4.  **Redirección:** Inyecta la lista resultante en el `request` bajo el atributo `asignaturas` y delega la visualización a la vista `/asignaturas_alumno.html` usando `RequestDispatcher`.
+
+### 2. DetallesAlumnoServlet
+Este servlet construye el expediente detallado del alumno, combinando su información personal con su rendimiento académico.
+
+* **Método HTTP:** `GET`
+* **Lógica de ejecución:**
+    1.  **Peticiones múltiples:** A diferencia del anterior, este servlet realiza dos llamadas a la API:
+        * `/alumnos/{dni}?key={key}`: Para obtener la ficha personal (nombre, apellidos, etc.) y mapearlo a un objeto `Alumno`.
+        * `/alumnos/{dni}/asignaturas?key={key}`: Para obtener las materias cursadas.
+    2.  **Lógica temporal (Hito 1):** Dado que la API (Swagger) no expone claramente las notas dentro del listado de asignaturas, se ha implementado una nota media "dummy" (8.5) para cumplir con los requisitos visuales de esta primera entrega.
+    3.  **Requisitos de la práctica:** Se inyecta un texto *Lorem Ipsum* estático en el atributo `loremIpsum`, tal y como exige el enunciado del Hito 1.
+    4.  **Redirección:** Empaqueta todos los datos (`alumno`, `asignaturas`, `notaMedia`, `loremIpsum`) y redirige a la vista `/detalles_alumno.html`.
+
+### Gestión de Errores en Servlets
+En ambos servlets, si ocurre algún fallo de red (conexión caída con la API) o error de parseo JSON, la excepción es capturada en un bloque `catch`, se imprime en la salida estándar de errores (consola) y se redirige de forma segura al usuario a `/login-error.html` para evitar exponer las trazas al cliente.
