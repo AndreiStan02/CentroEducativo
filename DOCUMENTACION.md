@@ -231,3 +231,23 @@ Este servlet construye el expediente detallado del alumno, combinando su informa
 
 ### Gestión de Errores en Servlets
 En ambos servlets, si ocurre algún fallo de red (conexión caída con la API) o error de parseo JSON, la excepción es capturada en un bloque `catch`, se imprime en la salida estándar de errores (consola) y se redirige de forma segura al usuario a `/login-error.html` para evitar exponer las trazas al cliente.
+---
+
+## Cliente de Comunicación API (ApiClient)
+
+Para evitar la duplicación de código en los distintos servlets y centralizar la lógica de comunicación con el backend `CentroEducativo`, se ha creado una clase de utilidad en el paquete `api`.
+
+### Clase ApiClient
+Esta clase actúa como un envoltorio (wrapper) para realizar peticiones HTTP hacia la API REST externa utilizando la librería **Apache HttpClient 5**.
+
+#### Método: `obtenerDatosGet(String urlFinal)`
+Es un método estático y reutilizable diseñado específicamente para realizar peticiones HTTP de tipo `GET`. 
+
+* **Lógica de ejecución:**
+    1. **Configuración del Cliente:** Inicializa un cliente HTTP por defecto (`CloseableHttpClient`).
+    2. **Preparación de la Petición:** Crea un objeto `HttpGet` con la URL final construida previamente por los servlets (que ya incluye el DNI y la *key* de sesión).
+    3. **Negociación de Contenido:** Establece explícitamente la cabecera `Accept` a `application/json` para asegurar que el backend devuelve los datos en el formato correcto para ser procesados posteriormente por Gson.
+    4. **Ejecución y Validación:** Ejecuta la petición y evalúa el código de estado HTTP de la respuesta:
+        * Si el código es **200 (OK)**: Extrae el contenido del cuerpo de la respuesta como una cadena de texto (String) utilizando `EntityUtils.toString()` y lo retorna al servlet llamador.
+        * Si el código es **distinto de 200**: Lanza una excepción indicando que hubo un error en la API junto con el código recibido, lo cual interrumpe el flujo y transfiere el control al bloque `catch` del servlet.
+* **Gestión de Recursos:** Implementa bloques `try-with-resources` tanto para el cliente HTTP como para la respuesta (`CloseableHttpResponse`). Esto garantiza que las conexiones de red se cierren correctamente de forma automática tras su uso o en caso de error, previniendo fugas de memoria.
