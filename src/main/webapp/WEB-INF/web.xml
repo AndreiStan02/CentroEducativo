@@ -1,43 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+                             https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         id="WebApp_ID" version="6.0">
 
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" id="WebApp_ID" version="6.0">
+    <display-name>nol2526</display-name>
 
-  <display-name>no12526</display-name>
-
-    <!-- ================================================================== -->
-    <!-- PARÁMETROS DE CONTEXTO                                              -->
-    <!-- ================================================================== -->
-
-    <!-- URL base de CentroEducativo -->
     <context-param>
         <param-name>centroEducativoUrl</param-name>
         <param-value>http://localhost:9090/CentroEducativo</param-value>
     </context-param>
 
-    <!-- ================================================================== -->
-    <!-- FILTROS                                                             -->
-    <!-- ================================================================== -->
-	
-	<context-param>
-		<param-name>archivoLog</param-name>
-		<param-value>no12526.log</param-value>
-	</context-param>
-	
-	<filter>
-		<filter-name>Logs</filter-name>
-		<filter-class>filtros.filtroLogs</filter-class>
-	</filter>
-	
-	<filter-mapping>
-		<filter-name>Logs</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	
-    <!-- ================================================================== -->
-    <!-- SERVLETS                                                            -->
-    <!-- ================================================================== -->
+    <context-param>
+        <param-name>archivoLog</param-name>
+        <param-value>nol2526.log</param-value>
+    </context-param>
 
-    <!-- Login: recibe el formulario, autentica contra CentroEducativo -->
+    <context-param>
+        <param-name>logsActivos</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <filter>
+        <filter-name>Logs</filter-name>
+        <filter-class>filtros.filtroLogs</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>Logs</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <servlet>
         <servlet-name>Acceso</servlet-name>
         <servlet-class>serverlets.Acceso</servlet-class>
@@ -47,7 +41,6 @@
         <url-pattern>/acceso</url-pattern>
     </servlet-mapping>
 
-    <!-- Logout: invalida la sesión y redirige al inicio -->
     <servlet>
         <servlet-name>Logout</servlet-name>
         <servlet-class>serverlets.Logout</servlet-class>
@@ -57,32 +50,50 @@
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 
-    <!-- Configuración del Servlet de Asignaturas de Alumno -->
     <servlet>
         <servlet-name>AsignaturasAlumnoServlet</servlet-name>
-        <!-- ¡CAMBIO AQUÍ! Ahora apunta a serverlets -->
         <servlet-class>serverlets.AsignaturasAlumnoServlet</servlet-class>
     </servlet>
-    
     <servlet-mapping>
         <servlet-name>AsignaturasAlumnoServlet</servlet-name>
         <url-pattern>/alumno/asignaturas</url-pattern>
     </servlet-mapping>
-    
-        <!-- Configuración del Servlet de Detalles/Expediente del Alumno -->
+
     <servlet>
         <servlet-name>DetallesAlumnoServlet</servlet-name>
         <servlet-class>serverlets.DetallesAlumnoServlet</servlet-class>
     </servlet>
-    
     <servlet-mapping>
         <servlet-name>DetallesAlumnoServlet</servlet-name>
         <url-pattern>/alumno/detalles</url-pattern>
     </servlet-mapping>
-    
-    <!-- ================================================================== -->
-    <!-- SESIÓN Y PÁGINA DE INICIO                                           -->
-    <!-- ================================================================== -->
+
+    <servlet>
+        <servlet-name>AsignaturasProfesorServlet</servlet-name>
+        <servlet-class>serverlets.AsignaturasProfesorServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AsignaturasProfesorServlet</servlet-name>
+        <url-pattern>/profesor/asignaturas</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AlumnosAsignaturaServlet</servlet-name>
+        <servlet-class>serverlets.AlumnosAsignaturaServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AlumnosAsignaturaServlet</servlet-name>
+        <url-pattern>/profesor/alumnos</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>NotaServlet</servlet-name>
+        <servlet-class>serverlets.NotaServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>NotaServlet</servlet-name>
+        <url-pattern>/profesor/nota</url-pattern>
+    </servlet-mapping>
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
@@ -91,4 +102,53 @@
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+
+    <security-role>
+        <role-name>rolpro</role-name>
+    </security-role>
+    <security-role>
+        <role-name>rolalu</role-name>
+    </security-role>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Zonas Protegidas de la Aplicación</web-resource-name>
+            <url-pattern>/acceso</url-pattern>
+            
+            <url-pattern>/asignaturas_alumno.html</url-pattern>
+            <url-pattern>/detalles_alumno.html</url-pattern>
+            
+            <url-pattern>/profesor-asignaturas.html</url-pattern>
+            <url-pattern>/profesor-evaluacion.html</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>rolpro</role-name>
+            <role-name>rolalu</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>Tomcat User Database Realm</realm-name>
+        <form-login-config>
+            <form-login-page>/login.html</form-login-page>
+            <form-error-page>/login.html?error=1</form-error-page>
+        </form-login-config>
+    </login-config>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/login.html?error=2</location>
+    </error-page>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error404.html</location>
+    </error-page>
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error500.html</location>
+    </error-page>
+
 </web-app>

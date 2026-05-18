@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
@@ -17,10 +16,13 @@ import org.apache.hc.core5.http.ContentType;
 
 import java.io.IOException;
 
+/**
+ * Servlet "Acceso": Se encarga de compatibilizar y acoplar la sesión web de Tomcat 
+ * con el nivel de datos (CentroEducativo) de forma transparente.
+ */
 public class Acceso extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-
     private String centroEducativoUrl;
 
     @Override
@@ -34,101 +36,87 @@ public class Acceso extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("key") != null) {
-            redirigirSegunRol(request, response, (String) session.getAttribute("rol"));
-            return;
-        }
-        response.sendRedirect(request.getContextPath() + "/login.html");
+        procesarAcoplamientoDeSesion(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        // Si ya hay sesión activa, redirigir directamente
-        HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("key") != null) {
-            redirigirSegunRol(request, response, (String) session.getAttribute("rol"));
-            return;
-        }
-
-        String dni      = request.getParameter("dni");
-        String password = request.getParameter("password");
-
-        if (dni == null || password == null || dni.isBlank() || password.isBlank()) {
-            response.sendRedirect(request.getContextPath() + "/login.html?error=1");
-            return;
-        }
-
-        dni      = dni.trim();
-        password = password.trim();
-
-        // Un único cliente HTTP para que la cookie de sesión de CentroEducativo
-        // se mantenga entre el POST /login y los GET posteriores
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-
-            // --- 1. Login contra CentroEducativo ---
-            String key = login(httpClient, dni, password);
-
-            if (key == null) {
-                log("[Acceso] Login fallido para DNI: " + dni);
-                response.sendRedirect(request.getContextPath() + "/login.html?error=1");
-                return;
-            }
-
-            log("[Acceso] Login OK. Key: " + key);
-
-            // --- 2. Determinar rol usando el mismo cliente (misma cookie) ---
-            String rol = obtenerRol(httpClient, dni, key);
-
-            if (rol == null) {
-                log("[Acceso] No se pudo determinar el rol para DNI: " + dni);
-                response.sendRedirect(request.getContextPath() + "/login.html?error=1");
-                return;
-            }
-
-            log("[Acceso] Rol: " + rol);
-
-            // --- 3. Guardar en sesión HTTP de Tomcat ---
-            HttpSession newSession = request.getSession(true);
-            newSession.setAttribute("dni",  dni);
-            newSession.setAttribute("pass", password);
-            newSession.setAttribute("key",  key);
-            newSession.setAttribute("rol",  rol);
-
-            // --- 4. Redirigir ---
-            redirigirSegunRol(request, response, rol);
-
-        } catch (Exception e) {
-            log("[Acceso] Error inesperado: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/login.html?error=1");
-        }
+        procesarAcoplamientoDeSesion(request, response);
     }
 
-    // -------------------------------------------------------------------------
-    // Métodos auxiliares
-    // -------------------------------------------------------------------------
+    private void procesarAcoplamientoDeSesion(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-    private void redirigirSegunRol(HttpServletRequest request, HttpServletResponse response, String rol)
+        // Tomcat garantiza que si la ejecución llega aquí, ya existe un usuario autenticado
+        String login = request.getRemoteUser(); // Equivalente a web.auth() del pseudocódigo
+        
+        if (login == null) {
+            log("[Acceso] Error: El contenedor no ha propagado credenciales válidas.");
+            response.sendRedirect(request.getContextPath() + "/login.html?error=1");
+            return;
+        }
+
+        // Determinar el rol mediante seguridad programática
+        String rol = null;
+        if (request.isUserInRole("rolpro")) {
+            rol = "rolpro";
+        } else if (request.isUserInRole("rolalu")) {
+            rol = "rolalu";
+        }
+
+        HttpSession session = request.getSession(true);
+
+        // Si no disponemos de token de datos remoto ('key'), invocamos a CentroEducativo
+        if (session.getAttribute("key") == null) {
+            
+            // Contraseña fija por defecto declarada en el enunciado para las cuentas de arranque
+            String password = "123456"; 
+
+            try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+                log("[Acceso] Solicitando clave de datos para el DNI: " + login);
+                String key = dataAuth(httpClient, login, password);
+
+                if (key != null) {
+                    // Almacenamos en sesión los datos exigidos para las llamadas posteriores
+                    session.setAttribute("dni",  login);
+                    session.setAttribute("pass", password);
+                    session.setAttribute("key",  key);
+                    session.setAttribute("rol",  rol);
+                    log("[Acceso] Sesión unificada correctamente. Key asignada: " + key);
+                } else {
+                    log("[Acceso] Falló el login contra CentroEducativo API REST.");
+                    response.sendRedirect(request.getContextPath() + "/login.html?error=data_failed");
+                    return;
+                }
+            } catch (Exception e) {
+                log("[Acceso] Excepción de conexión contra el nivel de datos: " + e.getMessage());
+                response.sendRedirect(request.getContextPath() + "/login.html?error=data_failed");
+                return;
+            }
+        }
+
+        // Redirección final controlada basándose en el rol del usuario autenticado
+        redirigirUsuario(request, response, (String) session.getAttribute("rol"));
+    }
+
+    private void redirigirUsuario(HttpServletRequest request, HttpServletResponse response, String rol) 
             throws IOException {
         if ("rolpro".equals(rol)) {
+            // Redirige directamente al HTML de profesores en la raíz de webapp
             response.sendRedirect(request.getContextPath() + "/profesor-asignaturas.html");
         } else {
+            // Redirige directamente al HTML de alumnos en la raíz de webapp
             response.sendRedirect(request.getContextPath() + "/asignaturas_alumno.html");
         }
     }
 
     /**
-     * Hace POST /login y devuelve la key si las credenciales son correctas, null si no.
-     * Usa el cliente recibido para que la cookie de sesión quede guardada en él.
+     * Envía la petición POST /login a la API REST de CentroEducativo
      */
-    private String login(CloseableHttpClient httpClient, String dni, String password) {
+    private String dataAuth(CloseableHttpClient httpClient, String dni, String password) {
         String loginUrl = centroEducativoUrl + "/login";
-        String jsonBody = "{\"dni\":\"" + escapeJson(dni) + "\",\"password\":\"" + escapeJson(password) + "\"}";
-
-        log("[Acceso] POST " + loginUrl + " | Body: " + jsonBody);
+        String jsonBody = "{\"dni\":\"" + dni + "\",\"password\":\"" + password + "\"}";
 
         try {
             HttpPost httpPost = new HttpPost(loginUrl);
@@ -139,64 +127,14 @@ public class Acceso extends HttpServlet {
             try (CloseableHttpResponse res = httpClient.execute(httpPost)) {
                 int code = res.getCode();
                 String body = EntityUtils.toString(res.getEntity()).trim();
-                log("[Acceso] Login response: " + code + " | Body: " + body);
-                if (code == 200) {
-                    return body;
+                
+                if (code == 200 && !body.isEmpty()) {
+                    return body; // Retorna la 'key' alfanumérica devuelta por la API
                 }
             }
         } catch (Exception e) {
-            log("[Acceso] Error en login: " + e.getMessage());
+            log("[Acceso] Excepción en método auxiliar dataAuth: " + e.getMessage());
         }
         return null;
-    }
-
-    /**
-     * Usa el mismo cliente (con la cookie de sesión ya establecida) para consultar
-     * si el DNI corresponde a un alumno o a un profesor.
-     */
-    private String obtenerRol(CloseableHttpClient httpClient, String dni, String key) {
-        try {
-            // Probar si es alumno — key por query string, mismo cliente (tiene la cookie)
-            String urlAlumno = centroEducativoUrl + "/alumnos/" + dni + "?key=" + key;
-            log("[Acceso] GET " + urlAlumno);
-            HttpGet getAlumno = new HttpGet(urlAlumno);
-            getAlumno.setHeader("Accept", "application/json");
-
-            try (CloseableHttpResponse res = httpClient.execute(getAlumno)) {
-                int code = res.getCode();
-                log("[Acceso] /alumnos/" + dni + " → " + code);
-                EntityUtils.consume(res.getEntity());
-                if (code == 200) return "rolalu";
-            }
-
-            // Probar si es profesor
-            String urlProfesor = centroEducativoUrl + "/profesores/" + dni + "?key=" + key;
-            log("[Acceso] GET " + urlProfesor);
-            HttpGet getProfesor = new HttpGet(urlProfesor);
-            getProfesor.setHeader("Accept", "application/json");
-
-            try (CloseableHttpResponse res = httpClient.execute(getProfesor)) {
-                int code = res.getCode();
-                log("[Acceso] /profesores/" + dni + " → " + code);
-                EntityUtils.consume(res.getEntity());
-                if (code == 200) return "rolpro";
-            }
-
-        } catch (Exception e) {
-            log("[Acceso] Error obteniendo rol: " + e.getMessage());
-        }
-        return null;
-    }
-
-    private String escapeJson(String valor) {
-        if (valor == null) return "";
-        return valor
-            .replace("\\", "\\\\")
-            .replace("\"", "\\\"")
-            .replace("\b", "\\b")
-            .replace("\f", "\\f")
-            .replace("\n", "\\n")
-            .replace("\r", "\\r")
-            .replace("\t", "\\t");
     }
 }

@@ -11,7 +11,7 @@
 
 <nav class="navbar navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="index.html">📋 Notas OnLine</a>
+        <a class="navbar-brand fw-bold" href="index.html">Notas OnLine</a>
     </div>
 </nav>
 
@@ -23,14 +23,19 @@
                 <p class="text-muted">Introduce tus credenciales para acceder</p>
             </div>
             <div class="card-body p-4">
-                <form method="post" action="acceso">
+                
+                <div id="error-alert" class="alert alert-danger d-none animate-fade" role="alert"></div>
+
+                <form method="POST" action="j_security_check">
                     <div class="mb-3">
-                        <label for="dni" class="form-label fw-semibold">DNI</label>
-                        <input type="text" class="form-control" id="dni" name="dni" placeholder="Ej: 12345678W" required autofocus>
+                        <label for="j_username" class="form-label fw-semibold">DNI</label>
+                        <input type="text" class="form-control" id="j_username" name="j_username"
+                               placeholder="Ej: 12345678W" required autofocus>
                     </div>
                     <div class="mb-4">
-                        <label for="password" class="form-label fw-semibold">Contraseña</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Tu contraseña" required>
+                        <label for="j_password" class="form-label fw-semibold">Contraseña</label>
+                        <input type="password" class="form-control" id="j_password" name="j_password"
+                               placeholder="Tu contraseña" required>
                     </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg">Acceder</button>
@@ -47,37 +52,32 @@
     </div>
 </main>
 
-<<<<<<< HEAD
-
-<footer class="bg-dark text-white text-center py-3 small mt-auto">
-
-<!-- Footer — PLACEHOLDER: rellenar con grupo y nombres reales -->
-=======
->>>>>>> branch 'main' of https://salmane2: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@github.com/AndreiStan02/CentroEducativo.git
 <footer class="bg-dark text-white text-center py-4 small mt-auto">
-<<<<<<< HEAD
-
-=======
->>>>>>> branch 'main' of https://salmane2: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@github.com/AndreiStan02/CentroEducativo.git
     <div class="container">
         <span class="fw-bold">Grupo 13_lab_Miercoles</span> |
         Salmane Elhaouzi · Alaa Ghabi · Barat Arriaza Alvaro · Stan Dima Vlad Andrei · Valles Galan Alejandra · Villar Melis Pablo
-<<<<<<< HEAD
-
         <br>
         Trabajo en grupo realizado para la asignatura <em>Desarrollo Web</em>. Curso 2025-2026
-
-=======
->>>>>>> branch 'main' of https://salmane2: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@github.com/AndreiStan02/CentroEducativo.git
-        <br><br>
-        Trabajo en grupo para la asignatura <em>Desarrollo de Entornos Web</em> — Curso 2025/2026
-<<<<<<< HEAD
-
-=======
->>>>>>> branch 'main' of https://salmane2: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@github.com/AndreiStan02/CentroEducativo.git
     </div>
 </footer>
 
+<script>
+    // Procesamiento básico de parámetros URL para informar de errores de acceso
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorParam = urlParams.get('error');
+    const alertEl = document.getElementById('error-alert');
+
+    if (errorParam === '1') {
+        alertEl.textContent = "Credenciales web incorrectas. Por favor, inténtalo de nuevo.";
+        alertEl.classList.remove('d-none');
+    } else if (errorParam === '2') {
+        alertEl.textContent = "No tienes permisos suficientes para acceder a este recurso.";
+        alertEl.classList.remove('d-none');
+    } else if (errorParam === 'data_failed') {
+        alertEl.textContent = "Error de sincronización con el nivel de datos central.";
+        alertEl.classList.remove('d-none');
+    }
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
