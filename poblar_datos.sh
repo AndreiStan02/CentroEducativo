@@ -1,56 +1,62 @@
 #!/bin/bash
-# ==============================================================
-# Script de inicialización de datos para CentroEducativo
-# Proyecto: NOL (no12526)
-# ==============================================================
 
-echo "Iniciando carga de datos en CentroEducativo (localhost:9090)..."
+BASE_URL="http://localhost:9090/CentroEducativo"
 
-# 1. Login como administrador para conseguir la KEY de sesión
-# Se guardan las cookies en 'sesion.txt' y extraemos la key usando 'tr' para quitar comillas
-KEY=$(curl -s --data '{"dni":"111111111","password":"654321"}' \
-  -X POST -H "content-type: application/json" \
-  http://localhost:9090/CentroEducativo/login -c sesion.txt | tr -d '"')
-
+echo "================================================="
+echo "1. Haciendo login para obtener credenciales..."
+echo "================================================="
+# Hacemos login y guardamos la cookie en cookies.txt
+KEY=$(curl -s -X POST "$BASE_URL/login" \
+     -H "Content-Type: application/json" \
+     -d '{"dni":"111111111", "password":"123"}' \
+     -c cookies.txt | tr -d '"')
+     
 echo "Login exitoso. KEY obtenida: $KEY"
-echo "--------------------------------------------------------"
+echo ""
 
-# 2. Añadir un Profesor
-echo "Añadiendo profesor (Valderas)..."
-curl -s --data '{"apellidos": "Valderas", "dni": "10293756L", "nombre": "Pedro", "password": "123"}' \
-  -X POST -H "content-type: application/json" \
-  "http://localhost:9090/CentroEducativo/profesores?key=$KEY" -b sesion.txt
+echo "================================================="
+echo "2. Creando profesor Valderas..."
+echo "================================================="
+curl -X POST "$BASE_URL/profesores?key=$KEY" -b cookies.txt \
+     -H "Content-Type: application/json" \
+     -d '{"dni": "10293756L", "nombre": "Pedro", "apellidos": "Valderas", "password": "123"}'
 echo -e "\n"
 
-# 3. Añadir una Asignatura
-echo "Añadiendo asignatura (Desarrollo Web)..."
-curl -s --data '{"acronimo": "DEW", "nombre": "Desarrollo Web", "curso": 3, "cuatrimestre": "B", "creditos": 4.5}' \
-  -X POST -H "content-type: application/json" \
-  "http://localhost:9090/CentroEducativo/asignaturas?key=$KEY" -b sesion.txt
+echo "================================================="
+echo "3. Creando asignatura DEW..."
+echo "================================================="
+curl -X POST "$BASE_URL/asignaturas?key=$KEY" -b cookies.txt \
+     -H "Content-Type: application/json" \
+     -d '{"acronimo": "DEW", "nombre": "Desarrollo Web", "curso": 3, "cuatrimestre": "B", "creditos": 4.5}'
 echo -e "\n"
 
-# 4. Asignar el Profesor a la Asignatura
-# Endpoint de la captura: POST /asignaturas/{acronimo}/profesores
-echo "Asignando profesor Valderas a DEW..."
-curl -s --data '{"dni":"10293756L"}' \
-  -X POST -H "content-type: application/json" \
-  "http://localhost:9090/CentroEducativo/asignaturas/DEW/profesores?key=$KEY" -b sesion.txt
+echo "================================================="
+echo "4. Asignando profesor a la asignatura DEW..."
+echo "================================================="
+# Probamos enviándolo como texto plano (text/plain), que es lo que suelen 
+# pedir estas APIs cuando Swagger espera solo un String (DNI)
+curl -X POST "$BASE_URL/asignaturas/DEW/profesores?key=$KEY" -b cookies.txt \
+     -H "Content-Type: text/plain" \
+     -d '10293756L'
 echo -e "\n"
 
-# 5. Añadir un Alumno
-echo "Añadiendo alumno (Pepe Garcia)..."
-curl -s --data '{"apellidos": "Garcia Sanchez", "dni": "12345678W", "nombre": "Pepe", "password": "123"}' \
-  -X POST -H "content-type: application/json" \
-  "http://localhost:9090/CentroEducativo/alumnos?key=$KEY" -b sesion.txt
+echo "================================================="
+echo "5. Creando alumno Pepe..."
+echo "================================================="
+curl -X POST "$BASE_URL/alumnos?key=$KEY" -b cookies.txt \
+     -H "Content-Type: application/json" \
+     -d '{"dni": "12345678W", "nombre": "Pepe", "apellidos": "Garcia Sanchez", "password": "123"}'
 echo -e "\n"
 
-# 6. Matricular al alumno en la asignatura
-# Endpoint de la captura: POST /alumnos/{dni}/asignaturas
-echo "Matriculando a Pepe en DEW..."
-curl -s --data '{"acronimo":"DEW"}' \
-  -X POST -H "content-type: application/json" \
-  "http://localhost:9090/CentroEducativo/alumnos/12345678W/asignaturas?key=$KEY" -b sesion.txt
+echo "================================================="
+echo "6. Matriculando alumno Pepe en DEW..."
+echo "================================================="
+# Probamos enviando solo el acrónimo como texto plano
+curl -X POST "$BASE_URL/alumnos/12345678W/asignaturas?key=$KEY" -b cookies.txt \
+     -H "Content-Type: text/plain" \
+     -d 'DEW'
 echo -e "\n"
 
-echo "--------------------------------------------------------"
-echo "Carga de datos finalizada. ¡CentroEducativo está listo!"
+echo "================================================="
+echo "¡Carga de datos finalizada! Revisa las respuestas."
+echo "================================================="
