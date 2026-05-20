@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -26,15 +27,16 @@
                 
                 <div id="error-alert" class="alert alert-danger d-none animate-fade" role="alert"></div>
 
-                <form method="POST" action="j_security_check">
+                <!-- Modificado: action ahora apunta a tu servlet "acceso" -->
+                <form method="POST" action="acceso">
                     <div class="mb-3">
-                        <label for="j_username" class="form-label fw-semibold">DNI</label>
-                        <input type="text" class="form-control" id="j_username" name="j_username"
+                        <label for="username" class="form-label fw-semibold">DNI</label>
+                        <input type="text" class="form-control" id="username" name="username"
                                placeholder="Ej: 12345678W" required autofocus>
                     </div>
                     <div class="mb-4">
-                        <label for="j_password" class="form-label fw-semibold">Contraseña</label>
-                        <input type="password" class="form-control" id="j_password" name="j_password"
+                        <label for="password" class="form-label fw-semibold">Contraseña</label>
+                        <input type="password" class="form-control" id="password" name="password"
                                placeholder="Tu contraseña" required>
                     </div>
                     <div class="d-grid">
@@ -62,12 +64,11 @@
 </footer>
 
 <script>
-    // Procesamiento básico de parámetros URL para informar de errores de acceso
     const urlParams = new URLSearchParams(window.location.search);
     const errorParam = urlParams.get('error');
     const alertEl = document.getElementById('error-alert');
 
-    if (errorParam === '1') {
+    if (errorParam === '1' || errorParam === 'invalid') {
         alertEl.textContent = "Credenciales web incorrectas. Por favor, inténtalo de nuevo.";
         alertEl.classList.remove('d-none');
     } else if (errorParam === '2') {

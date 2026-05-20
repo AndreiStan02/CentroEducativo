@@ -17,7 +17,7 @@ import org.apache.hc.core5.http.ContentType;
 import java.io.IOException;
 
 /**
- * Servlet "Acceso": Se encarga de compatibilizar y acoplar la sesión web de Tomcat 
+ * Servlet "Acceso": Se encarga de compatibilizar y acoplar la sesión web de Tomcat
  * con el nivel de datos (CentroEducativo) de forma transparente.
  */
 public class Acceso extends HttpServlet {
@@ -48,11 +48,20 @@ public class Acceso extends HttpServlet {
     private void procesarAcoplamientoDeSesion(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Tomcat garantiza que si la ejecución llega aquí, ya existe un usuario autenticado
-        String login = request.getRemoteUser(); // Equivalente a web.auth() del pseudocódigo
-        
-        if (login == null) {
-            log("[Acceso] Error: El contenedor no ha propagado credenciales válidas.");
+        // Leemos las credenciales enviadas por el formulario
+        String login    = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        if (login == null || password == null || login.isBlank()) {
+            response.sendRedirect(request.getContextPath() + "/login.html?error=1");
+            return;
+        }
+
+        // Autenticación programática contra Tomcat (equivalente al web.auth() del pseudocódigo)
+        try {
+            request.login(login.trim(), password);
+        } catch (ServletException e) {
+            log("[Acceso] Fallo de autenticación Tomcat para: " + login);
             response.sendRedirect(request.getContextPath() + "/login.html?error=1");
             return;
         }
@@ -69,17 +78,14 @@ public class Acceso extends HttpServlet {
 
         // Si no disponemos de token de datos remoto ('key'), invocamos a CentroEducativo
         if (session.getAttribute("key") == null) {
-            
-            // Contraseña fija por defecto declarada en el enunciado para las cuentas de arranque
-            String password = "123456"; 
 
             try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-                log("[Acceso] Solicitando clave de datos para el DNI: " + login);
-                String key = dataAuth(httpClient, login, password);
+                log("[Acceso] Solicitando clave de datos para el DNI: " + login.trim());
+                String key = dataAuth(httpClient, login.trim(), password);
 
                 if (key != null) {
                     // Almacenamos en sesión los datos exigidos para las llamadas posteriores
-                    session.setAttribute("dni",  login);
+                    session.setAttribute("dni",  login.trim());
                     session.setAttribute("pass", password);
                     session.setAttribute("key",  key);
                     session.setAttribute("rol",  rol);
@@ -100,13 +106,11 @@ public class Acceso extends HttpServlet {
         redirigirUsuario(request, response, (String) session.getAttribute("rol"));
     }
 
-    private void redirigirUsuario(HttpServletRequest request, HttpServletResponse response, String rol) 
+    private void redirigirUsuario(HttpServletRequest request, HttpServletResponse response, String rol)
             throws IOException {
         if ("rolpro".equals(rol)) {
-            // Redirige directamente al HTML de profesores en la raíz de webapp
             response.sendRedirect(request.getContextPath() + "/profesor-asignaturas.html");
         } else {
-            // Redirige directamente al HTML de alumnos en la raíz de webapp
             response.sendRedirect(request.getContextPath() + "/asignaturas_alumno.html");
         }
     }
@@ -127,9 +131,9 @@ public class Acceso extends HttpServlet {
             try (CloseableHttpResponse res = httpClient.execute(httpPost)) {
                 int code = res.getCode();
                 String body = EntityUtils.toString(res.getEntity()).trim();
-                
+
                 if (code == 200 && !body.isEmpty()) {
-                    return body; // Retorna la 'key' alfanumérica devuelta por la API
+                    return body;
                 }
             }
         } catch (Exception e) {

@@ -1,16 +1,9 @@
 package filtros;
 
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {
-    "/asignaturas_alumno.html",
-    "/detalles_alumno.html",
-    "/profesor-asignaturas.html",
-    "/profesor-evaluacion.html"
-})
 public class SesionFilter implements Filter {
 
     @Override
@@ -24,7 +17,6 @@ public class SesionFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         HttpSession session = req.getSession(false);
-        // ✅ Usar "key", que es lo que guarda tu servlet Acceso
         boolean autenticado = (session != null && session.getAttribute("key") != null);
 
         if (autenticado) {

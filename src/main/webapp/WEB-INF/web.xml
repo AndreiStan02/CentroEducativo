@@ -7,6 +7,7 @@
 
     <display-name>nol2526</display-name>
 
+    <!-- ==================== PARÁMETROS GLOBALES ==================== -->
     <context-param>
         <param-name>centroEducativoUrl</param-name>
         <param-value>http://localhost:9090/CentroEducativo</param-value>
@@ -22,6 +23,7 @@
         <param-value>true</param-value>
     </context-param>
 
+    <!-- ==================== FILTROS ==================== -->
     <filter>
         <filter-name>Logs</filter-name>
         <filter-class>filtros.filtroLogs</filter-class>
@@ -32,6 +34,7 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!-- ==================== SERVLETS ==================== -->
     <servlet>
         <servlet-name>Acceso</servlet-name>
         <servlet-class>serverlets.Acceso</servlet-class>
@@ -87,22 +90,26 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>NotaServlet</servlet-name>
-        <servlet-class>serverlets.NotaServlet</servlet-class>
+        <servlet-name>CalificarAlumnoServlet</servlet-name>
+        <servlet-class>serverlets.CalificarAlumnoServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>NotaServlet</servlet-name>
+        <servlet-name>CalificarAlumnoServlet</servlet-name>
         <url-pattern>/profesor/nota</url-pattern>
     </servlet-mapping>
 
+    <!-- ==================== PÁGINA DE INICIO ==================== -->
     <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
+        <!-- Actualizado a index.jsp -->
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
+    <!-- ==================== SESIÓN ==================== -->
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
 
+    <!-- ==================== SEGURIDAD (Estilo Declarativo) ==================== -->
     <security-role>
         <role-name>rolpro</role-name>
     </security-role>
@@ -110,20 +117,28 @@
         <role-name>rolalu</role-name>
     </security-role>
 
+    <!-- Restricciones separadas por rol para coincidir con la lógica del compañero -->
     <security-constraint>
         <web-resource-collection>
-            <web-resource-name>Zonas Protegidas de la Aplicación</web-resource-name>
-            <url-pattern>/acceso</url-pattern>
-            
+            <web-resource-name>Zona alumno</web-resource-name>
+            <url-pattern>/alumno/*</url-pattern>
             <url-pattern>/asignaturas_alumno.html</url-pattern>
             <url-pattern>/detalles_alumno.html</url-pattern>
-            
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>rolalu</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Zona profesor</web-resource-name>
+            <url-pattern>/profesor/*</url-pattern>
             <url-pattern>/profesor-asignaturas.html</url-pattern>
             <url-pattern>/profesor-evaluacion.html</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>rolpro</role-name>
-            <role-name>rolalu</role-name>
         </auth-constraint>
     </security-constraint>
 
@@ -131,14 +146,16 @@
         <auth-method>FORM</auth-method>
         <realm-name>Tomcat User Database Realm</realm-name>
         <form-login-config>
-            <form-login-page>/login.html</form-login-page>
-            <form-error-page>/login.html?error=1</form-error-page>
+            <!-- Actualizado para usar los archivos JSP -->
+            <form-login-page>/login.jsp</form-login-page>
+            <form-error-page>/login.jsp?error=invalid</form-error-page>
         </form-login-config>
     </login-config>
 
+    <!-- ==================== ERRORES ==================== -->
     <error-page>
         <error-code>403</error-code>
-        <location>/login.html?error=2</location>
+        <location>/login.jsp?error=2</location>
     </error-page>
 
     <error-page>
